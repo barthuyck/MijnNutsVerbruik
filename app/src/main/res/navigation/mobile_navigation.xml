@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_day">
+
+    <fragment
+        android:id="@+id/navigation_day"
+        android:label="@string/title_day"
+        tools:layout="@layout/fragment_day"
+        android:name="be.huyck.mijnnutsverbruik.ui.day.DayFragment"/>
+    <fragment
+        android:id="@+id/navigation_week"
+        android:label="@string/title_week"
+        tools:layout="@layout/fragment_week"
+        android:name="be.huyck.mijnnutsverbruik.ui.week.WeekFragment" />
+    <fragment
+        android:id="@+id/navigation_month"
+        android:name="be.huyck.mijnnutsverbruik.ui.month.MonthFragment"
+        android:label="@string/title_month"
+        tools:layout="@layout/fragment_month"/>
+    <fragment
+        android:id="@+id/navigation_year"
+        android:name="be.huyck.mijnnutsverbruik.ui.year.YearFragment"
+        android:label="@string/title_year"
+        tools:layout="@layout/fragment_year"/>
+</navigation>

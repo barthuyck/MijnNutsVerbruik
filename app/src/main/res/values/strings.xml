@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">Mijn Nuts Verbruik</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="title_day">Dagoverzicht</string>
+    <string name="title_week">Weekoverzicht</string>
+    <string name="title_month">Maandoverzicht</string>
+    <string name="title_year">Jaaroverzicht</string>
+
+    <!-- <string name="settings_action">Settings</string> -->
+    <string name="settings_login">Log in</string>
+    <string name="settings_logout">Log uit</string>
+    <string name="snackbar_userloggedin"> is ingelogd</string>
+    <string name="grafiek_titel">waterverbruik</string>
+
+    <string name="verbruikdezeweek">Verbruik deze week:</string>
+    <string name="liter">l.</string>
+    <string name="title_activity_settings">Informatie</string>
+
+    <!-- Settings Titles: preferences -->
+    <string name="pref_version_title">App versie nummer:</string>
+    <string name="pref_version_header">Versie</string>
+
+    <string name="pref_url_category_title">App informatie</string>
+    <string name="pref_url_title">Meer informatie</string>
+    <string name="pref_url_summary">Klik op deze link voor meer informatie rond deze app.</string>
+    <string name="pref_url_data">https://github.com/barthuyck/HuisEnergieLogger/</string>
+</resources>
