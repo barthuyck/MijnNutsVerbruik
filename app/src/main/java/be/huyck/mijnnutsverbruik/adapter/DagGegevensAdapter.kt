@@ -62,14 +62,14 @@ class DagGegevensViewHolder constructor(itemView: View) : RecyclerView.ViewHolde
         val formatteruur = DateTimeFormatter.ofPattern("HH:mm")
         itemView.datum.text = grafiekdatum.format(formatterdag)
         val tekstlwv =
-            daggegeven.literwatervandaag.toString() + " l. water (geupdatetet op: " + grafiekdatum.format(
+            daggegeven.literwatervandaag.toString() + " l. water (geüpdatet op: " + grafiekdatum.format(
                 formatteruur
             ) + ")"
         itemView.literwatervandaag.text = tekstlwv
         var kubgasvandaag = daggegeven.litergasvandaag ?: 0.0
         kubgasvandaag = kubgasvandaag/1000
         val tekstlgv =
-            kubgasvandaag.toString() + " m³ gas (geupdatetet op: " + grafiekdatum.format(
+            kubgasvandaag.toString() + " m³ gas (geüpdatet op: " + grafiekdatum.format(
                 formatteruur
             ) + ")"
         itemView.litergasvandaag.text = tekstlgv
@@ -115,7 +115,7 @@ class DagGegevensViewHolder constructor(itemView: View) : RecyclerView.ViewHolde
                 loper++
             }
             entriesgas.add(Entry(0.0F, 0.0F))
-            val dataSetGas: LineDataSet = LineDataSet(entriesgas, "Gas (m³)")
+            val dataSetGas: LineDataSet = LineDataSet(entriesgas, "Gas (l)")
 
             dataSetGas.setAxisDependency(YAxis.AxisDependency.RIGHT)
             dataSetGas.fillColor = Color.RED
