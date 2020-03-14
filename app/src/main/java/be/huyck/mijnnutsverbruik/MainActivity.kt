@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var auth : FirebaseAuth
     lateinit var MyViewModel : VerbruiksViewModel
-    lateinit var mySharedPreferences : SharedPreferences
+    //lateinit var mySharedPreferences : SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,6 +48,10 @@ class MainActivity : AppCompatActivity() {
 
         auth = FirebaseAuth.getInstance()
         MyViewModel = ViewModelProvider(this)[VerbruiksViewModel::class.java]
+        /*mySharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        MyViewModel.GeefWaterWeerInGrafiek = mySharedPreferences.getBoolean("switch_preference_water",true)
+        MyViewModel.GeefGasWeerInGrafiek = mySharedPreferences.getBoolean("switch_preference_gas",true)*/
+
         val gebruiker = auth.currentUser
         if (gebruiker != null) {
             MyViewModel.loadAllData()
@@ -100,9 +104,18 @@ class MainActivity : AppCompatActivity() {
                 signOut()
                 true
             }
+            R.id.refresh_settings -> {
+                RefreshData()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
 
         }
+    }
+
+    fun RefreshData(){
+        MyViewModel.loadAllData()
+        Snackbar.make(getWindow().getDecorView(), getString(R.string.snackbar_refreshdata), Snackbar.LENGTH_LONG).show()
     }
 
     // setting activity

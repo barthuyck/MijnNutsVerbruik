@@ -17,6 +17,17 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <PreferenceCategory android:title="@string/pref_data_category_title">
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="switch_preference_water"
+            android:title="@string/pref_data_water" />
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="switch_preference_gas"
+            android:title="@string/pref_data_gas" />
+    </PreferenceCategory>
     <PreferenceCategory app:title="@string/pref_version_header">
         <Preference
             app:key="versie"

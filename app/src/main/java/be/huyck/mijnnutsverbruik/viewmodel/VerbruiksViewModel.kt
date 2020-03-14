@@ -24,6 +24,8 @@ class VerbruiksViewModel : ViewModel() {
     val text: LiveData<String> = _text
 
     private var auth: FirebaseAuth
+    var GeefWaterWeerInGrafiek: Boolean = true
+    var GeefGasWeerInGrafiek: Boolean = true
 
 
     init {
@@ -109,9 +111,9 @@ class VerbruiksViewModel : ViewModel() {
             docRef.orderBy("datum", Query.Direction.DESCENDING).get() //
                 .addOnSuccessListener { result ->
                     for (document in result) {
-                        Log.d(TAG, "${document.id} => ${document.data}")
+                        // Log.d(TAG, "${document.id} => ${document.data}")
                         val docData = document.toObject(DagGegevens::class.java)
-                        //Log.d(TAG, "docdata: ${docData.literwatervandaag}")
+                        // Log.d(TAG, "docdata: ${docData.literwatervandaag}")
                         lijstDG.add(docData)
                     }
                     Log.d(TAG,"data succesfull recieved")
@@ -131,59 +133,71 @@ class VerbruiksViewModel : ViewModel() {
         var dagenmetdata = mutableListOf<DagDatumGegevens>()
         var dagindeweek = LocalDateTime.now().dayOfWeek
         var weekdata = mutableListOf(0.0,0.0,0.0,0.0,0.0,0.0,0.0)
+        var weekdatagas = mutableListOf(0.0,0.0,0.0,0.0,0.0,0.0,0.0)
 
         for (dag in lijstDG) {
             val tmp = dag
             val vandaag = LocalDateTime.parse(tmp.datum, DateTimeFormatter.ISO_DATE_TIME)
             val verbruiktwater = dag.literwatervandaag ?: 0.0
+            val verbruiktgas = dag.litergasvandaag ?: 0.0
+            val verbruiktgaskub = verbruiktgas/1000.0
             //https://kotlinlang.org/docs/reference/null-safety.html#nullable-types-and-non-null-types
 
             dagindeweek = vandaag.dayOfWeek
             when(dagindeweek){
                 DayOfWeek.MONDAY -> {
-                    dagenmetdata.add(DagDatumGegevens(vandaag,verbruiktwater))
+                    dagenmetdata.add(DagDatumGegevens(vandaag,verbruiktwater,verbruiktgaskub))
                     weekdata[0] = verbruiktwater
-                    week.weekdata = weekdata
+                    weekdatagas[0] = verbruiktgaskub
                     week.datadagen = dagenmetdata
+                    week.weekdata = weekdata
+                    week.weekdatagas = weekdatagas
                     lijstWG.add(week)
                     //Log.d(TAG,"Week: $week")
                     week = WeekGegevens()
                     weekdata = mutableListOf(0.0,0.0,0.0,0.0,0.0,0.0,0.0)
+                    weekdatagas = mutableListOf(0.0,0.0,0.0,0.0,0.0,0.0,0.0)
                     dagenmetdata = mutableListOf<DagDatumGegevens>()
 
                 }
                 DayOfWeek.TUESDAY -> {
-                    dagenmetdata.add(DagDatumGegevens(vandaag,verbruiktwater))
+                    dagenmetdata.add(DagDatumGegevens(vandaag,verbruiktwater,verbruiktgaskub))
                     weekdata[1] = verbruiktwater
+                    weekdatagas[1] = verbruiktgaskub
                 }
                 DayOfWeek.WEDNESDAY -> {
-                    dagenmetdata.add(DagDatumGegevens(vandaag,verbruiktwater))
+                    dagenmetdata.add(DagDatumGegevens(vandaag,verbruiktwater,verbruiktgaskub))
                     weekdata[2] = verbruiktwater
+                    weekdatagas[2] = verbruiktgaskub
                 }
                 DayOfWeek.THURSDAY -> {
-                    dagenmetdata.add(DagDatumGegevens(vandaag,verbruiktwater))
+                    dagenmetdata.add(DagDatumGegevens(vandaag,verbruiktwater,verbruiktgaskub))
                     weekdata[3] = verbruiktwater
+                    weekdatagas[3] = verbruiktgaskub
                 }
                 DayOfWeek.FRIDAY -> {
-                    dagenmetdata.add(DagDatumGegevens(vandaag,verbruiktwater))
-                    //week.vrijdag =  DagDatumGegevens(vandaag,verbruiktwater)
+                    dagenmetdata.add(DagDatumGegevens(vandaag,verbruiktwater,verbruiktgaskub))
                     weekdata[4] = verbruiktwater
+                    weekdatagas[4] = verbruiktgaskub
                 }
                 DayOfWeek.SATURDAY -> {
-                    dagenmetdata.add(DagDatumGegevens(vandaag,verbruiktwater))
+                    dagenmetdata.add(DagDatumGegevens(vandaag,verbruiktwater,verbruiktgaskub))
                     weekdata[5] = verbruiktwater
+                    weekdatagas[5] = verbruiktgaskub
                 }
                 DayOfWeek.SUNDAY -> {
-                    dagenmetdata.add(DagDatumGegevens(vandaag,verbruiktwater))
+                    dagenmetdata.add(DagDatumGegevens(vandaag,verbruiktwater,verbruiktgaskub))
                     weekdata[6] = verbruiktwater
+                    weekdatagas[6] = verbruiktgaskub
                 }
                 null -> {}
             }
         }
         if(dagindeweek != DayOfWeek.MONDAY){
             //Log.d(TAG,"Week: $week")
-            week.datadagen = dagenmetdata
             week.weekdata = weekdata
+            week.datadagen = dagenmetdata
+            week.weekdatagas = weekdatagas
             lijstWG.add(week)
         }
         //Log.d(TAG,"$lijstWG")
@@ -195,24 +209,29 @@ class VerbruiksViewModel : ViewModel() {
         var dagenmetdata = mutableListOf<DagDatumGegevens>()
         var tellermaandinjaar = LocalDateTime.now().monthValue
         var maanddata = mutableListOf(0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0)
+        var maanddatagas = mutableListOf(0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0)
 
         var jaar = JaarGegevens()
         var jaardata = mutableListOf(0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0)
+        var jaardatagas = mutableListOf(0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0)
 
         for (dag in lijstDG) {
             val vandaag = LocalDateTime.parse(dag.datum, DateTimeFormatter.ISO_DATE_TIME)
             val verbruiktwater = dag.literwatervandaag ?: 0.0
+            val verbruiktgasliter = dag.litergasvandaag ?: 0.0
+            val verbruiktgas = verbruiktgasliter/1000 // in m³ gas
             //https://kotlinlang.org/docs/reference/null-safety.html#nullable-types-and-non-null-types
 
             if (tellermaandinjaar == vandaag.monthValue) {
-                dagenmetdata.add(DagDatumGegevens(vandaag, verbruiktwater))
+                dagenmetdata.add(DagDatumGegevens(vandaag, verbruiktwater,verbruiktgas))
                 //Log.d(TAG,"vandaag.dayOfMonth: ${vandaag.dayOfMonth.toString()}")
                 maanddata[vandaag.dayOfMonth-1] = verbruiktwater
+                maanddatagas[vandaag.dayOfMonth-1] = verbruiktgas
                 tellermaandinjaar = vandaag.monthValue
             } else {
-
-                maand.maanddata = maanddata
                 maand.datadagen = dagenmetdata
+                maand.maanddata = maanddata
+                maand.maanddatagas = maanddatagas
                 lijstMG.add(maand)
                 //Log.d(TAG,"Nieuwe maand toegevoegd")
                 //Log.d(TAG,"Maand: $lijstMG")
@@ -221,17 +240,24 @@ class VerbruiksViewModel : ViewModel() {
                     jaar.laatsteDagJaar = dagenmetdata.first()
                 }
                 jaardata[tellermaandinjaar-1] = maanddata.sum()
+                jaardatagas[tellermaandinjaar-1] = maanddatagas.sum()
+                //Log.d(TAG, "Jaardatagas: $jaardatagas")
                 jaar.jaardata = jaardata
+                jaar.jaardatagas = jaardatagas
                 if (vandaag.monthValue == 12){
+                    //Log.d(TAG,"Maand: $jaar")
                     lijstJG.add(jaar)
                     jaar = JaarGegevens()
                     jaardata = mutableListOf(0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0)
+                    jaardatagas = mutableListOf(0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0)
                 }
 
                 maanddata = mutableListOf(0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0)
+                maanddatagas = mutableListOf(0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0)
                 maanddata[vandaag.dayOfMonth-1] = verbruiktwater
+                maanddatagas[vandaag.dayOfMonth-1] = verbruiktgas
                 dagenmetdata = mutableListOf<DagDatumGegevens>()
-                dagenmetdata.add(DagDatumGegevens(vandaag, verbruiktwater))
+                dagenmetdata.add(DagDatumGegevens(vandaag, verbruiktwater,verbruiktgas))
                 //Log.d(TAG,"vandaag.dayOfMonth: ${vandaag.dayOfMonth.toString()}")
                 maand = MaandGegevens()
 
@@ -240,6 +266,7 @@ class VerbruiksViewModel : ViewModel() {
         }
         // maand toevoegen die niet afgewerkt is
         maand.maanddata = maanddata
+        maand.maanddatagas = maanddatagas
         maand.datadagen = dagenmetdata
         lijstMG.add(maand)
         // jaar toevoegen dat nog niet afgewerkt is?
@@ -248,7 +275,10 @@ class VerbruiksViewModel : ViewModel() {
             jaar.laatsteDagJaar = dagenmetdata.first()
         }
         jaardata[tellermaandinjaar-1] = maanddata.sum()
+        jaardatagas[tellermaandinjaar-1] = maanddatagas.sum()
         jaar.jaardata = jaardata
+        jaar.jaardatagas = jaardatagas
+        //Log.d(TAG,"Maand: $jaar")
         lijstJG.add(jaar)
         //Log.d(TAG,"Maand: $lijstJG")
         //Log.d(TAG,"Nieuwe maand toegevoegd")

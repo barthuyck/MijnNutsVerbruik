@@ -12,8 +12,8 @@ android {
         applicationId "be.huyck.mijnnutsverbruik"
         minSdkVersion 26
         targetSdkVersion 29
-        versionCode 1
-        versionName "2.2.0.0"
+        versionCode 3
+        versionName "3.2.0.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     applicationVariants.all { variant ->

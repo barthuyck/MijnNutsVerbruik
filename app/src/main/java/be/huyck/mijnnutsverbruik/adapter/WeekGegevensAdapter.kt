@@ -1,26 +1,22 @@
 package be.huyck.mijnnutsverbruik.adapter
 
-import android.provider.Settings.System.getString
-import android.util.Log
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
 import be.huyck.mijnnutsverbruik.R
 import be.huyck.mijnnutsverbruik.model.WeekGegevens
 import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.ValueFormatter
 import kotlinx.android.synthetic.main.fragment_week_adapter.view.*
 import java.time.format.DateTimeFormatter
-
-
-
-
-
 
 
 class WeekGegevensAdapter : RecyclerView.Adapter<WeekGegevensViewHolder>() {
@@ -63,24 +59,59 @@ class WeekGegevensViewHolder constructor(itemView: View) : RecyclerView.ViewHold
         val grafiekdatumlaatst = weekgegeven.datadagen?.first()?.datum?.format(formatterdag)
         val grafiekdatum = grafiekdatumeerst + " - " + grafiekdatumlaatst
         itemView.barChartWeekDatum.text = grafiekdatum
-        val verbruikinkub = weekgegeven.weekdata.sum()/1000
-        itemView.barChartWeekTotaal.text = "Verbruik deze week: " + verbruikinkub.toString() + " m³."
+        val verbruikwaterinkub = weekgegeven.weekdata.sum() / 1000
+        val verbruikgasinkub = weekgegeven.weekdatagas.sum()
+        itemView.barChartWeekWater.text = "Weekverbruik water: " + verbruikwaterinkub.toString() + " m³."
+        itemView.barChartWeekGas.text = "Weekverbruik gas: " + String.format("%.3f", verbruikgasinkub) + " m³."
+
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(itemView.context)
+        val GeefWaterWeerInGrafiek = sharedPreferences.getBoolean("switch_preference_water", true)
+        val GeefGasWeerInGrafiek = sharedPreferences.getBoolean("switch_preference_gas", true)
 
         val plotdata = weekgegeven.weekdata
         val numbersIterator = plotdata.iterator()
         var loper = 0
         val entries = ArrayList<BarEntry>()
-        while (numbersIterator.hasNext()) {
-            entries.add(BarEntry(loper.toFloat(), numbersIterator.next().toFloat()))
-            loper++
+        if (GeefWaterWeerInGrafiek) {
+            while (numbersIterator.hasNext()) {
+                entries.add(BarEntry(loper.toFloat(), numbersIterator.next().toFloat()))
+                loper++
+            }
+        } else {
+            entries.add(BarEntry(0.0F, 0.0F))
         }
 
-        val set = BarDataSet(entries, "Water (l)")
+        val setwater = BarDataSet(entries, "Water (l)")
+        setwater.setAxisDependency(YAxis.AxisDependency.LEFT)
 
-        val data = BarData(set)
-        data.barWidth = 0.7f // set custom bar width
 
+        val plotdatagas = weekgegeven.weekdatagas
+        val numbersIteratorgas = plotdatagas.iterator()
+        loper = 0
+        val entriesgas = ArrayList<BarEntry>()
+        if(GeefGasWeerInGrafiek) {
+            while (numbersIteratorgas.hasNext()) {
+                entriesgas.add(BarEntry(loper.toFloat(), numbersIteratorgas.next().toFloat()))
+                loper++
+            }
+        }
+        else{
+            entriesgas.add(BarEntry(0.0F, 0.0F))
+        }
+        val setgas = BarDataSet(entriesgas, "Gas (m³)")
+        setgas.setAxisDependency(YAxis.AxisDependency.RIGHT)
+        setgas.color = Color.RED
+
+        var data = BarData(setwater, setgas)
+
+        val groupSpace = 0.1f
+        val barSpace = 0.05f // x2 dataset
+        val barWidth = 0.4f // x2 dataset
+        // (0.02 + 0.45) * 2 + 0.06 = 1.00 -> interval
+
+        data.barWidth = barWidth // set custom bar width
         itemView.barChartWeek.setData(data)
+        itemView.barChartWeek.groupBars(-0.5f, groupSpace, barSpace) // perform the "explicit" grouping
         //itemView.barChartWeek.setFitBars(true) // make the x-axis fit exactly all bars
 
         val xAxis = itemView.barChartWeek.getXAxis()
@@ -88,19 +119,18 @@ class WeekGegevensViewHolder constructor(itemView: View) : RecyclerView.ViewHold
         xAxis.setTextSize(10f)
         xAxis.setDrawAxisLine(true)
         xAxis.setDrawGridLines(true)
-
-
         xAxis.valueFormatter = MyValueFormatterWeek()
-
 
         val yAxis = itemView.barChartWeek.axisLeft
         yAxis.axisMinimum = 0.0F
+
         val yAxisr = itemView.barChartWeek.axisRight
-        yAxisr.isEnabled = false
+        yAxisr.axisMinimum = 0.0F
+        yAxisr.setDrawGridLines(false)
+        //yAxisr.isEnabled = false
 
         itemView.barChartWeek.getDescription().setEnabled(false)
         itemView.barChartWeek.invalidate() // refresh
-
     }
 
     // the labels that should be drawn on the XAxis

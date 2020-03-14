@@ -11,12 +11,14 @@
     <!-- <string name="settings_action">Settings</string> -->
     <string name="settings_login">Log in</string>
     <string name="settings_logout">Log uit</string>
+    <string name="settings_refresh">Vernieuw data</string>
     <string name="snackbar_userloggedin"> is ingelogd</string>
+    <string name="snackbar_refreshdata">Data wordt ververst</string>
     <string name="grafiek_titel">waterverbruik</string>
 
     <string name="verbruikdezeweek">Verbruik deze week:</string>
     <string name="liter">l.</string>
-    <string name="title_activity_settings">Informatie</string>
+    <string name="title_activity_settings">Instellingen en Info</string>
 
     <!-- Settings Titles: preferences -->
     <string name="pref_version_title">App versie nummer:</string>
@@ -26,4 +28,11 @@
     <string name="pref_url_title">Meer informatie</string>
     <string name="pref_url_summary">Klik op deze link voor meer informatie rond deze app.</string>
     <string name="pref_url_data">https://github.com/barthuyck/HuisEnergieLogger/</string>
+
+    <string name="pref_data_category_title">Visualiseer gegevens</string>
+    <string name="pref_data_title">Selcteer de weer te geven data</string>
+    <string name="pref_data_water">Voeg water toe in grafiek</string>
+    <string name="pref_data_gas">Voeg gas toe in grafiek</string>
+    Switch preference
+
 </resources>
