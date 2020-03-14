@@ -1,9 +1,0 @@
-2.1.0.1
--
-
-2.2.0.0
-- update to android studio 3.6 and corresponding compiler updates 
-
-3.0.0.0
-- add extra menu to reload data manual
-- add gas to daily plot 
