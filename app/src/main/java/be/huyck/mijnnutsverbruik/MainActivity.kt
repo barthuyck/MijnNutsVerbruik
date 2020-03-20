@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity() {
             MyViewModel.loadAllData()
             //val useruid = gebruiker.uid.toString()
             val username = gebruiker.displayName
-            Snackbar.make(getWindow().getDecorView(), username + getString(R.string.snackbar_userloggedin), Snackbar.LENGTH_LONG).show()
+            Snackbar.make(getWindow().getDecorView(), username + ' ' + getString(R.string.snackbar_userloggedin), Snackbar.LENGTH_LONG).show()
         }
         else{
             createSignInIntent()
@@ -162,7 +162,7 @@ class MainActivity : AppCompatActivity() {
                     val useruid = user.uid.toString()
                     val username = user.displayName
                     Log.d(TAG, "Gebruiker " + username + " met userid " + useruid + " is ingelogd")
-                    Snackbar.make(getWindow().getDecorView(), username + getString(R.string.snackbar_userloggedin), Snackbar.LENGTH_LONG).show()
+                    Snackbar.make(getWindow().getDecorView(), username + ' ' + getString(R.string.snackbar_userloggedin), Snackbar.LENGTH_LONG).show()
                     MyViewModel.loadAllData()
                     //val nu = LocalDateTime.now()
                     Log.d(TAG, "data gelezen")

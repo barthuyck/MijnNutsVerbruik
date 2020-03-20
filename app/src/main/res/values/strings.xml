@@ -27,7 +27,7 @@
     <string name="pref_url_category_title">App informatie</string>
     <string name="pref_url_title">Meer informatie</string>
     <string name="pref_url_summary">Klik op deze link voor meer informatie rond deze app.</string>
-    <string name="pref_url_data">https://github.com/barthuyck/HuisEnergieLogger/</string>
+    <string name="pref_url_data">https://github.com/barthuyck/MijnNutsVerbruik</string>
 
     <string name="pref_data_category_title">Visualiseer gegevens</string>
     <string name="pref_data_title">Selcteer de weer te geven data</string>

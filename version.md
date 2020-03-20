@@ -28,3 +28,7 @@
 3.2.1
 - changed some typo's
 
+3.2.2.0
+- changed some typo's
+- correct github link
+

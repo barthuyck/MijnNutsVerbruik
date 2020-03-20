@@ -145,22 +145,16 @@ class DagGegevensViewHolder constructor(itemView: View) : RecyclerView.ViewHolde
         yAxisr.setDrawGridLines(false)
         //.isEnabled = false
 
-
-
-
         val lineData: LineData = LineData(dataSetsGegevens)
         //val formatterstr = DateTimeFormatter.ofPattern("d/M/Y H:mm")
 
         //itemView.chart.setTitle(getString(R.string.grafiek_titel))
 
-
         itemView.chart.setData(lineData)
         itemView.chart.getDescription().setEnabled(false)
         itemView.chart.fitScreen()
         itemView.chart.setMaxVisibleValueCount(30)
-
         itemView.chart.invalidate() // refresh
-
 
     }
 

@@ -4,5 +4,8 @@ Deze app leest de informatie van een een water (pulsteller, opgeslagen per kwart
 
 ![Dagverbruik](screenshot1.png) 
 
-![Maandverbruik](screenshot2.png) 
+![Weekverbruik](screenshot2.png) 
 
+![Maandverbruik](screenshot3.png) 
+
+![Jaarverbruik](screenshot4.png) 
