@@ -17,7 +17,7 @@ import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.ValueFormatter
 import kotlinx.android.synthetic.main.fragment_month_adapter.view.*
-import kotlinx.android.synthetic.main.fragment_week_adapter.view.*
+import java.time.LocalDateTime
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 
@@ -150,6 +150,9 @@ class MaandGegevensViewHolder constructor(itemView: View) : RecyclerView.ViewHol
 
     class MyValueFormatterWeek : ValueFormatter() {
         val dagen = arrayOf("ma", "di", "woe", "do", "vr", "za", "zo")
+        /*val formaat = DateTimeFormatter.ofPattern("EEEEEE")
+        val datumm = LocalDateTime.now()
+        test = datumm.format(formaat)*/
 
         override fun getAxisLabel(value: Float, axis: AxisBase): String {
             return dagen[value.toInt()]

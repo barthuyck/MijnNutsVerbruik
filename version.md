@@ -32,3 +32,6 @@
 - changed some typo's
 - correct github link
 
+3.3.0.0
+- check for data quality
+

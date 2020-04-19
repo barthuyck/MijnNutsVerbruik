@@ -54,9 +54,9 @@ class DagGegevensAdapter : RecyclerView.Adapter<DagGegevensViewHolder>() {
 }
 
 class DagGegevensViewHolder constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    val TAG = "be.huyck.mijnnutsverbruik.DagGegevensViewHolder"
 
     fun bind(daggegeven: DagGegevens) {
-
         val grafiekdatum = LocalDateTime.parse(daggegeven.datum, DateTimeFormatter.ISO_DATE_TIME)
         val formatterdag = DateTimeFormatter.ofPattern("E dd/MM/yyyy")
         val formatteruur = DateTimeFormatter.ofPattern("HH:mm")
@@ -149,7 +149,12 @@ class DagGegevensViewHolder constructor(itemView: View) : RecyclerView.ViewHolde
         //val formatterstr = DateTimeFormatter.ofPattern("d/M/Y H:mm")
 
         //itemView.chart.setTitle(getString(R.string.grafiek_titel))
-
+        if(daggegeven.mogelijksdataverlies == true){
+            itemView.litergasvandaag.setBackgroundColor(Color.rgb(255,200,200));
+            itemView.literwatervandaag.setBackgroundColor(Color.rgb(255,200,200));
+        }
+        //Log.d(TAG,"mogelijksdataverlies: $daggegeven.meetmogelijksdataverlies")
+        //itemView.setBackgroundColor(Color.MAGENTA);
         itemView.chart.setData(lineData)
         itemView.chart.getDescription().setEnabled(false)
         itemView.chart.fitScreen()

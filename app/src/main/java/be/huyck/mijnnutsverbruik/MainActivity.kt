@@ -114,6 +114,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun RefreshData(){
+        MyViewModel.cleardata()
         MyViewModel.loadAllData()
         Snackbar.make(getWindow().getDecorView(), getString(R.string.snackbar_refreshdata), Snackbar.LENGTH_LONG).show()
     }

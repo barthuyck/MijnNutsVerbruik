@@ -141,12 +141,13 @@ class VerbruiksViewModel : ViewModel() {
             val verbruiktwater = dag.literwatervandaag ?: 0.0
             val verbruiktgas = dag.litergasvandaag ?: 0.0
             val verbruiktgaskub = verbruiktgas/1000.0
+            val lagekwaliteitdata = dag.mogelijksdataverlies ?: false
             //https://kotlinlang.org/docs/reference/null-safety.html#nullable-types-and-non-null-types
 
             dagindeweek = vandaag.dayOfWeek
             when(dagindeweek){
                 DayOfWeek.MONDAY -> {
-                    dagenmetdata.add(DagDatumGegevens(vandaag,verbruiktwater,verbruiktgaskub))
+                    dagenmetdata.add(DagDatumGegevens(vandaag,verbruiktwater,verbruiktgaskub,lagekwaliteitdata))
                     weekdata[0] = verbruiktwater
                     weekdatagas[0] = verbruiktgaskub
                     week.datadagen = dagenmetdata
@@ -161,32 +162,32 @@ class VerbruiksViewModel : ViewModel() {
 
                 }
                 DayOfWeek.TUESDAY -> {
-                    dagenmetdata.add(DagDatumGegevens(vandaag,verbruiktwater,verbruiktgaskub))
+                    dagenmetdata.add(DagDatumGegevens(vandaag,verbruiktwater,verbruiktgaskub,lagekwaliteitdata))
                     weekdata[1] = verbruiktwater
                     weekdatagas[1] = verbruiktgaskub
                 }
                 DayOfWeek.WEDNESDAY -> {
-                    dagenmetdata.add(DagDatumGegevens(vandaag,verbruiktwater,verbruiktgaskub))
+                    dagenmetdata.add(DagDatumGegevens(vandaag,verbruiktwater,verbruiktgaskub,lagekwaliteitdata))
                     weekdata[2] = verbruiktwater
                     weekdatagas[2] = verbruiktgaskub
                 }
                 DayOfWeek.THURSDAY -> {
-                    dagenmetdata.add(DagDatumGegevens(vandaag,verbruiktwater,verbruiktgaskub))
+                    dagenmetdata.add(DagDatumGegevens(vandaag,verbruiktwater,verbruiktgaskub,lagekwaliteitdata))
                     weekdata[3] = verbruiktwater
                     weekdatagas[3] = verbruiktgaskub
                 }
                 DayOfWeek.FRIDAY -> {
-                    dagenmetdata.add(DagDatumGegevens(vandaag,verbruiktwater,verbruiktgaskub))
+                    dagenmetdata.add(DagDatumGegevens(vandaag,verbruiktwater,verbruiktgaskub,lagekwaliteitdata))
                     weekdata[4] = verbruiktwater
                     weekdatagas[4] = verbruiktgaskub
                 }
                 DayOfWeek.SATURDAY -> {
-                    dagenmetdata.add(DagDatumGegevens(vandaag,verbruiktwater,verbruiktgaskub))
+                    dagenmetdata.add(DagDatumGegevens(vandaag,verbruiktwater,verbruiktgaskub,lagekwaliteitdata))
                     weekdata[5] = verbruiktwater
                     weekdatagas[5] = verbruiktgaskub
                 }
                 DayOfWeek.SUNDAY -> {
-                    dagenmetdata.add(DagDatumGegevens(vandaag,verbruiktwater,verbruiktgaskub))
+                    dagenmetdata.add(DagDatumGegevens(vandaag,verbruiktwater,verbruiktgaskub,lagekwaliteitdata))
                     weekdata[6] = verbruiktwater
                     weekdatagas[6] = verbruiktgaskub
                 }

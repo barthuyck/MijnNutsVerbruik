@@ -7,14 +7,16 @@ data class DagGegevens(
     var literwatervandaag : Double? = null,
     val literwaterperkwartier: List<Double>? = null,
     var litergasvandaag : Double? = null,
-    val litergasperkwartier: List<Double>? = null
+    val litergasperkwartier: List<Double>? = null,
+    val mogelijksdataverlies: Boolean? = null
 
 )
 
 data class DagDatumGegevens(
     var datum: LocalDateTime = LocalDateTime.now(),
     var literwatervandaag : Double = 0.0,
-    var litergasvandaag : Double = 0.0
+    var litergasvandaag : Double = 0.0,
+    var lagekwaliteitdata : Boolean = false
 )
 
 data class WeekGegevens(
