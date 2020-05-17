@@ -61,7 +61,7 @@ class DagGegevensViewHolder constructor(itemView: View) : RecyclerView.ViewHolde
         val formatterdag = DateTimeFormatter.ofPattern("E dd/MM/yyyy")
         val formatteruur = DateTimeFormatter.ofPattern("HH:mm")
         itemView.datum.text = grafiekdatum.format(formatterdag)
-        val tekstlwv =
+        /*val tekstlwv =
             daggegeven.literwatervandaag.toString() + " l. water (geüpdatet op: " + grafiekdatum.format(
                 formatteruur
             ) + ")"
@@ -72,7 +72,17 @@ class DagGegevensViewHolder constructor(itemView: View) : RecyclerView.ViewHolde
             kubgasvandaag.toString() + " m³ gas (geüpdatet op: " + grafiekdatum.format(
                 formatteruur
             ) + ")"
-        itemView.litergasvandaag.text = tekstlgv
+        itemView.litergasvandaag.text = tekstlgv */
+
+
+
+        var kubgasvandaag = daggegeven.litergasvandaag ?: 0.0
+        kubgasvandaag = kubgasvandaag/1000
+        val tekstlwv =
+            "Om " + grafiekdatum.format(formatteruur) + ": " + daggegeven.literwatervandaag.toString() + " l. water - " + kubgasvandaag.toString() + " m³ gas"
+        itemView.datavandaag.text = tekstlwv
+
+
 
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(itemView.context)
         val GeefWaterWeerInGrafiek = sharedPreferences.getBoolean("switch_preference_water",true)
@@ -150,8 +160,11 @@ class DagGegevensViewHolder constructor(itemView: View) : RecyclerView.ViewHolde
 
         //itemView.chart.setTitle(getString(R.string.grafiek_titel))
         if(daggegeven.mogelijksdataverlies == true){
-            itemView.litergasvandaag.setBackgroundColor(Color.rgb(255,200,200));
-            itemView.literwatervandaag.setBackgroundColor(Color.rgb(255,200,200));
+            //itemView.litergasvandaag.setBackgroundColor(Color.rgb(255,200,200))
+            itemView.datavandaag.setCompoundDrawablesRelativeWithIntrinsicBounds(0,0, R.drawable.ic_notifications_black_24dp,0)
+            itemView.datavandaag.setBackgroundColor(Color.rgb(255,140,0))
+            //itemView.literwatervandaag.setBackgroundColor(Color.rgb(255,200,200))
+            //itemView.literwatervandaag.setCompoundDrawablesRelativeWithIntrinsicBounds(0,0, R.drawable.ic_notifications_black_24dp,0)
         }
         //Log.d(TAG,"mogelijksdataverlies: $daggegeven.meetmogelijksdataverlies")
         //itemView.setBackgroundColor(Color.MAGENTA);
