@@ -8,7 +8,6 @@ import be.huyck.mijnnutsverbruik.model.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import java.lang.Double.sum
 import java.time.DayOfWeek
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -99,6 +98,35 @@ class VerbruiksViewModel : ViewModel() {
         calcMonth()
     }
 
+    fun LoadInitailData() {
+        val user = auth.currentUser
+        if (user != null) {
+            val db = FirebaseFirestore.getInstance()
+            val db_useruid = "hg9ndEsTcuf0S0i7lPahRjUzCH83" //user.uid.toString()
+            //Log.d(TAG, "Database user ID ${db_useruid}")
+
+            val docRef = db.collection("users").document(db_useruid).collection("meetgegevens")
+            docRef.orderBy("datum", Query.Direction.DESCENDING).limit(5).get() //
+                .addOnSuccessListener { result ->
+                    for (document in result) {
+                        // Log.d(TAG, "${document.id} => ${document.data}")
+                        val docData = document.toObject(DagGegevens::class.java)
+                        // Log.d(TAG, "docdata: ${docData.literwatervandaag}")
+                        lijstDG.add(docData)
+                    }
+                    Log.d(TAG,"data succesfull recieved")
+                    MLDagGegevens.postValue(lijstDG)
+                    Log.d(TAG,"data succesfully posted")
+                    calcWeek()
+                    calcMonth()
+                }
+                .addOnFailureListener { exception ->
+                    Log.d(TAG, "Error getting documents: ", exception)
+                }
+        }
+
+    }
+
 
     fun loadAllData() {
         val user = auth.currentUser
@@ -108,7 +136,7 @@ class VerbruiksViewModel : ViewModel() {
             //Log.d(TAG, "Database user ID ${db_useruid}")
 
             val docRef = db.collection("users").document(db_useruid).collection("meetgegevens")
-            docRef.orderBy("datum", Query.Direction.DESCENDING).get() //
+            docRef.orderBy("datum", Query.Direction.DESCENDING).limit(5).get() //
                 .addOnSuccessListener { result ->
                     for (document in result) {
                         // Log.d(TAG, "${document.id} => ${document.data}")

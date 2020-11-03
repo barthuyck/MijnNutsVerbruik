@@ -2,7 +2,6 @@ package be.huyck.mijnnutsverbruik
 
 import android.app.Activity
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -14,14 +13,12 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import androidx.preference.PreferenceFragmentCompat
 import be.huyck.mijnnutsverbruik.viewmodel.VerbruiksViewModel
 import com.firebase.ui.auth.AuthUI
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
-import java.time.LocalDateTime
 import java.util.*
-import androidx.preference.PreferenceManager
+
 
 class MainActivity : AppCompatActivity() {
 

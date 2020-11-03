@@ -34,6 +34,12 @@
             app:title="@string/pref_version_title"
             app:summary="@string/versionName"/>
     </PreferenceCategory>
+    <PreferenceCategory app:title="@string/pref_user_header">
+        <Preference
+            app:key="gebruiker"
+            app:title="@string/pref_user_title"
+            app:summary="userID"/>
+    </PreferenceCategory>
 
     <!-- preference opens url in browser -->
     <PreferenceCategory app:title="@string/pref_url_category_title">

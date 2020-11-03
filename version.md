@@ -35,3 +35,6 @@
 3.3.0.0
 - check for data quality
 
+3.3.0.4
+- landscape modus
+

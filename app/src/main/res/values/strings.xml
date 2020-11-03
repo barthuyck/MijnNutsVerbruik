@@ -24,6 +24,9 @@
     <string name="pref_version_title">App versie nummer:</string>
     <string name="pref_version_header">Versie</string>
 
+    <string name="pref_user_title">Gebruiker:</string>
+    <string name="pref_user_header">FireBase user ID</string>
+
     <string name="pref_url_category_title">App informatie</string>
     <string name="pref_url_title">Meer informatie</string>
     <string name="pref_url_summary">Klik op deze link voor meer informatie rond deze app.</string>
