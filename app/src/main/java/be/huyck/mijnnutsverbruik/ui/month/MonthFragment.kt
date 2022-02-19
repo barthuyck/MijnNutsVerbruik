@@ -12,11 +12,13 @@ import androidx.lifecycle.ViewModelProvider
 import be.huyck.mijnnutsverbruik.R
 import be.huyck.mijnnutsverbruik.adapter.DagGegevensAdapter
 import be.huyck.mijnnutsverbruik.adapter.MaandGegevensAdapter
+import be.huyck.mijnnutsverbruik.databinding.FragmentDayBinding
+import be.huyck.mijnnutsverbruik.databinding.FragmentMonthBinding
 import be.huyck.mijnnutsverbruik.model.DagGegevens
 import be.huyck.mijnnutsverbruik.model.MaandGegevens
 import be.huyck.mijnnutsverbruik.viewmodel.VerbruiksViewModel
-import kotlinx.android.synthetic.main.fragment_day.*
-import kotlinx.android.synthetic.main.fragment_month.*
+//import kotlinx.android.synthetic.main.fragment_day.*
+//import kotlinx.android.synthetic.main.fragment_month.*
 
 class MonthFragment : Fragment(){
 
@@ -25,12 +27,21 @@ class MonthFragment : Fragment(){
 
     val TAGJE = "be.huyck.mijnnutsverbruik.MonthFragment"
 
+    private var _binding: FragmentMonthBinding? = null
+    // This property is only valid between onCreateView and
+    // onDestroyView.
+    private val binding get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return  inflater.inflate(R.layout.fragment_month, container, false)
+        Log.d(TAGJE,"onCreateView")
+        _binding = FragmentMonthBinding.inflate(inflater, container, false)
+        val view = binding.root
+        return view
+        //return  inflater.inflate(R.layout.fragment_month, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -39,7 +50,7 @@ class MonthFragment : Fragment(){
         verbruiksViewModel = ViewModelProvider(this).get(VerbruiksViewModel::class.java)
 
         gegevensadapter = MaandGegevensAdapter()
-        viewpagermonth.adapter = gegevensadapter
+        binding.viewpagermonth.adapter = gegevensadapter
 
         //viewModel = ViewModelProviders.of(this).get(DataViewModel::class.java)
         this.verbruiksViewModel = activity?.run {

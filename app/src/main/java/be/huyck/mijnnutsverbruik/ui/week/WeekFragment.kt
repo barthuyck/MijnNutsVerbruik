@@ -11,9 +11,11 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import be.huyck.mijnnutsverbruik.R
 import be.huyck.mijnnutsverbruik.adapter.WeekGegevensAdapter
+import be.huyck.mijnnutsverbruik.databinding.FragmentMonthBinding
+import be.huyck.mijnnutsverbruik.databinding.FragmentWeekBinding
 import be.huyck.mijnnutsverbruik.model.WeekGegevens
 import be.huyck.mijnnutsverbruik.viewmodel.VerbruiksViewModel
-import kotlinx.android.synthetic.main.fragment_week.*
+//import kotlinx.android.synthetic.main.fragment_week.*
 
 class WeekFragment : Fragment(){
 
@@ -22,12 +24,21 @@ class WeekFragment : Fragment(){
     private lateinit var verbruiksViewModel: VerbruiksViewModel
     private lateinit var gegevensadapter: WeekGegevensAdapter
 
+    private var _binding: FragmentWeekBinding? = null
+    // This property is only valid between onCreateView and
+    // onDestroyView.
+    private val binding get() = _binding!!
+
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_week, container, false)
+        _binding = FragmentWeekBinding.inflate(inflater, container, false)
+        val view = binding.root
+        return view
+        //return inflater.inflate(R.layout.fragment_week, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -37,7 +48,7 @@ class WeekFragment : Fragment(){
 
         //viewpagerdag.orientation = ViewPager2.ORIENTATION_VERTICAL
         gegevensadapter = WeekGegevensAdapter()
-        viewpagerweek.adapter = gegevensadapter
+        binding.viewpagerweek.adapter = gegevensadapter
 
         //viewModel = ViewModelProviders.of(this).get(DataViewModel::class.java)
         this.verbruiksViewModel = activity?.run {

@@ -36,6 +36,7 @@
     <string name="pref_data_title">Selcteer de weer te geven data</string>
     <string name="pref_data_water">Voeg water toe in grafiek</string>
     <string name="pref_data_gas">Voeg gas toe in grafiek</string>
+    <string name="pref_data_pv">Voeg PV toe in grafiek</string>
     Switch preference
 
 </resources>

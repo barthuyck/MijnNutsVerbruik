@@ -3,11 +3,11 @@ package be.huyck.mijnnutsverbruik.adapter
 import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
 import be.huyck.mijnnutsverbruik.R
+import be.huyck.mijnnutsverbruik.databinding.FragmentDayAdapterBinding
 import be.huyck.mijnnutsverbruik.model.DagGegevens
 import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.XAxis
@@ -17,26 +17,28 @@ import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
-import kotlinx.android.synthetic.main.fragment_day_adapter.view.*
 import java.text.DecimalFormat
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
-
 class DagGegevensAdapter : RecyclerView.Adapter<DagGegevensViewHolder>() {
     var lijst: List<DagGegevens> = ArrayList()
     val TAG = "be.huyck.mijnnutsverbruik.DagGegevensAdapter"
 
+    private lateinit var binding: FragmentDayAdapterBinding
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DagGegevensViewHolder {
         Log.d(TAG, "Start onCreateViewHolder")
-        return DagGegevensViewHolder(
+        binding = FragmentDayAdapterBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return DagGegevensViewHolder(binding)
+        /*return DagGegevensViewHolder(
             LayoutInflater.from(parent.context).inflate(
                 R.layout.fragment_day_adapter,
                 parent,
                 false
             )
-        )
+        )*/
     }
 
     fun geefGegevensDoor(dglijst: List<DagGegevens>) {
@@ -53,14 +55,16 @@ class DagGegevensAdapter : RecyclerView.Adapter<DagGegevensViewHolder>() {
     }
 }
 
-class DagGegevensViewHolder constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    val TAG = "be.huyck.mijnnutsverbruik.DagGegevensViewHolder"
+//class DagGegevensViewHolder constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class DagGegevensViewHolder constructor(private val binding: FragmentDayAdapterBinding) : RecyclerView.ViewHolder(binding.root) {
+        val TAG = "be.huyck.mijnnutsverbruik.DagGegevensViewHolder"
 
     fun bind(daggegeven: DagGegevens) {
+
         val grafiekdatum = LocalDateTime.parse(daggegeven.datum, DateTimeFormatter.ISO_DATE_TIME)
         val formatterdag = DateTimeFormatter.ofPattern("E dd/MM/yyyy")
         val formatteruur = DateTimeFormatter.ofPattern("HH:mm")
-        itemView.datum.text = grafiekdatum.format(formatterdag)
+        binding.datum.text = grafiekdatum.format(formatterdag)
         /*val tekstlwv =
             daggegeven.literwatervandaag.toString() + " l. water (geüpdatet op: " + grafiekdatum.format(
                 formatteruur
@@ -75,19 +79,21 @@ class DagGegevensViewHolder constructor(itemView: View) : RecyclerView.ViewHolde
         itemView.litergasvandaag.text = tekstlgv */
 
 
-
         var kubgasvandaag = daggegeven.litergasvandaag ?: 0.0
         kubgasvandaag = kubgasvandaag/1000
+        var kwPVvandaag = daggegeven.whPVvandaag ?: 0.0
+        kwPVvandaag = kwPVvandaag/1000
         val tekstlwv =
-            "Om " + grafiekdatum.format(formatteruur) + ": " + daggegeven.literwatervandaag.toString() + " l. water - " + kubgasvandaag.toString() + " m³ gas"
-        itemView.datavandaag.text = tekstlwv
+            "Om " + grafiekdatum.format(formatteruur) + ": " + daggegeven.literwatervandaag.toString() + " l. water - " + kubgasvandaag.toString() + " m³ gas - "+ kwPVvandaag.toString() + " kWh zonnenergie"
+
+        binding.datavandaag.text = tekstlwv
 
 
 
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(itemView.context)
         val GeefWaterWeerInGrafiek = sharedPreferences.getBoolean("switch_preference_water",true)
         val GeefGasWeerInGrafiek = sharedPreferences.getBoolean("switch_preference_gas",true)
-
+        val GeefPVWeerInGrafiek = sharedPreferences.getBoolean("switch_preference_pv",true)
 
         val dataSetsGegevens: MutableList<ILineDataSet> = ArrayList()
         if (daggegeven.literwaterperkwartier != null && GeefWaterWeerInGrafiek) {
@@ -137,7 +143,33 @@ class DagGegevensViewHolder constructor(itemView: View) : RecyclerView.ViewHolde
             dataSetsGegevens.add(dataSetGas)
         }
 
-        val xAxis = itemView.chart.getXAxis()
+        if (daggegeven.whPVperkwartier != null && GeefPVWeerInGrafiek) {
+            val plotdatapv = daggegeven.whPVperkwartier
+            val numbersIteratorpv = plotdatapv.iterator()
+            var loper = 0
+
+            val entriespv = ArrayList<Entry>()
+            entriespv.add(Entry(0.0F, 0.0F))
+            while (numbersIteratorpv.hasNext()) {
+                entriespv.add(Entry(loper.toFloat(), numbersIteratorpv.next().toFloat()))
+                loper++
+            }
+            entriespv.add(Entry(0.0F, 0.0F))
+            val dataSetPV: LineDataSet = LineDataSet(entriespv, "PV (Wh)")
+
+            dataSetPV.setAxisDependency(YAxis.AxisDependency.RIGHT)
+            dataSetPV.fillColor = Color.GREEN
+            dataSetPV.color = Color.GREEN
+            dataSetPV.mode = LineDataSet.Mode.HORIZONTAL_BEZIER
+            dataSetPV.setDrawCircles(false)
+            dataSetPV.setDrawValues(true)
+            dataSetPV.setDrawFilled(true)
+            dataSetsGegevens.add(dataSetPV)
+        }
+
+
+
+        val xAxis = binding.chart.getXAxis()
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM)
         xAxis.setTextSize(10f)
         //xAxis.setTextColor(Color.RED)
@@ -148,9 +180,9 @@ class DagGegevensViewHolder constructor(itemView: View) : RecyclerView.ViewHolde
         xAxis.valueFormatter = MyValueFormatter()
 
 
-        val yAxis = itemView.chart.axisLeft
+        val yAxis = binding.chart.axisLeft
         yAxis.axisMinimum = 0.0F
-        val yAxisr = itemView.chart.axisRight
+        val yAxisr = binding.chart.axisRight
         yAxisr.axisMinimum = 0.0F
         yAxisr.setDrawGridLines(false)
         //.isEnabled = false
@@ -161,18 +193,18 @@ class DagGegevensViewHolder constructor(itemView: View) : RecyclerView.ViewHolde
         //itemView.chart.setTitle(getString(R.string.grafiek_titel))
         if(daggegeven.mogelijksdataverlies == true){
             //itemView.litergasvandaag.setBackgroundColor(Color.rgb(255,200,200))
-            itemView.datavandaag.setCompoundDrawablesRelativeWithIntrinsicBounds(0,0, R.drawable.ic_notifications_black_24dp,0)
-            itemView.datavandaag.setBackgroundColor(Color.rgb(255,140,0))
+            binding.datavandaag.setCompoundDrawablesRelativeWithIntrinsicBounds(0,0, R.drawable.ic_notifications_black_24dp,0)
+            binding.datavandaag.setBackgroundColor(Color.rgb(255,140,0))
             //itemView.literwatervandaag.setBackgroundColor(Color.rgb(255,200,200))
             //itemView.literwatervandaag.setCompoundDrawablesRelativeWithIntrinsicBounds(0,0, R.drawable.ic_notifications_black_24dp,0)
         }
         //Log.d(TAG,"mogelijksdataverlies: $daggegeven.meetmogelijksdataverlies")
         //itemView.setBackgroundColor(Color.MAGENTA);
-        itemView.chart.setData(lineData)
-        itemView.chart.getDescription().setEnabled(false)
-        itemView.chart.fitScreen()
-        itemView.chart.setMaxVisibleValueCount(30)
-        itemView.chart.invalidate() // refresh
+        binding.chart.setData(lineData)
+        binding.chart.getDescription().setEnabled(false)
+        binding.chart.fitScreen()
+        binding.chart.setMaxVisibleValueCount(30)
+        binding.chart.invalidate() // refresh
 
     }
 

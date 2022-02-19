@@ -27,6 +27,10 @@
             android:defaultValue="true"
             android:key="switch_preference_gas"
             android:title="@string/pref_data_gas" />
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="switch_preference_pv"
+            android:title="@string/pref_data_pv" />
     </PreferenceCategory>
     <PreferenceCategory app:title="@string/pref_version_header">
         <Preference

@@ -8,17 +8,21 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import be.huyck.mijnnutsverbruik.R
 import be.huyck.mijnnutsverbruik.adapter.DagGegevensAdapter
+import be.huyck.mijnnutsverbruik.databinding.FragmentDayBinding
 import be.huyck.mijnnutsverbruik.model.DagGegevens
 import be.huyck.mijnnutsverbruik.viewmodel.VerbruiksViewModel
-import kotlinx.android.synthetic.main.fragment_day.*
-
 
 class DayFragment : Fragment() {
 
     private lateinit var verbruiksViewModel: VerbruiksViewModel
     private lateinit var gegevensadapter: DagGegevensAdapter
+
+    private var _binding: FragmentDayBinding? = null
+    // This property is only valid between onCreateView and
+    // onDestroyView.
+    private val binding get() = _binding!!
+
 
     val TAGJE = "be.huyck.mijnnutsverbruik.DayFragment"
 
@@ -28,8 +32,12 @@ class DayFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         Log.d(TAGJE,"onCreateView")
-        return inflater.inflate(R.layout.fragment_day, container, false)
+        _binding = FragmentDayBinding.inflate(inflater, container, false)
+        val view = binding.root
+        return view
+        //return inflater.inflate(R.layout.fragment_day, container, false)
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -38,7 +46,7 @@ class DayFragment : Fragment() {
 
         //viewpagerdag.orientation = ViewPager2.ORIENTATION_VERTICAL
         gegevensadapter = DagGegevensAdapter()
-        viewpagerdag.adapter = gegevensadapter
+        binding.viewpagerdag.adapter = gegevensadapter
 
         //viewModel = ViewModelProviders.of(this).get(DataViewModel::class.java)
         this.verbruiksViewModel = activity?.run {
@@ -50,13 +58,13 @@ class DayFragment : Fragment() {
         // Create the observer which updates the UI.
         verbruiksViewModel.getMLDagGegevens().observe(this, Observer<List<DagGegevens>> { geg ->
             // update UI
-            //Log.d(TAGJE,"nieuwe gegevens geladen via observer")
+            Log.d(TAGJE,"nieuwe gegevens geladen via observer")
             if (geg !=null){
                 gegevensadapter.geefGegevensDoor(geg)
                 gegevensadapter.notifyDataSetChanged()
             }
             else {
-                //Log.d(TAGJE, "geg is null")
+                Log.d(TAGJE, "geg is null")
             }
 
         })

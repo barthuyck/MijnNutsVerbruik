@@ -13,10 +13,18 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import be.huyck.mijnnutsverbruik.databinding.ActivityMainBinding
 import be.huyck.mijnnutsverbruik.viewmodel.VerbruiksViewModel
 import com.firebase.ui.auth.AuthUI
+import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
+import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import java.util.*
 
 
@@ -28,11 +36,21 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var auth : FirebaseAuth
     lateinit var MyViewModel : VerbruiksViewModel
+
+    //private lateinit var binding: ActivityMainBinding
+
+    private lateinit var googleSignInClient: GoogleSignInClient
+
     //lateinit var mySharedPreferences : SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        /*binding = ActivityMainBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)*/
+
         val navView = findViewById<BottomNavigationView>(R.id.nav_view)
 
         val navController = findNavController(R.id.nav_host_fragment)
@@ -43,7 +61,26 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-        auth = FirebaseAuth.getInstance()
+        //auth = FirebaseAuth.getInstance()
+
+        // [START config_signin]
+        // Configure Google Sign In
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+
+        googleSignInClient = GoogleSignIn.getClient(this, gso)
+        // [END config_signin]
+
+
+        // [START initialize_auth]
+        // Initialize Firebase Auth
+        auth = Firebase.auth
+        // [END initialize_auth]
+
+
+
         MyViewModel = ViewModelProvider(this)[VerbruiksViewModel::class.java]
         /*mySharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         MyViewModel.GeefWaterWeerInGrafiek = mySharedPreferences.getBoolean("switch_preference_water",true)
@@ -124,12 +161,80 @@ class MainActivity : AppCompatActivity() {
         //viewModel.backupOpDitToestel = mySharedPreferences.getBoolean("backup_op_dit_toestel",true)
     }
 
+    // firebase functies 2.0
 
-    // firebase functies
-    fun createSignInIntent() {
+    private fun createSignInIntent() {
         // [START auth_fui_create_intent]
         // Choose authentication providers
-        val providers = Arrays.asList(
+        val providers = arrayListOf(
+            AuthUI.IdpConfig.EmailBuilder().build(),
+            AuthUI.IdpConfig.GoogleBuilder().build())
+
+        // Create and launch sign-in intent
+        val signInIntent = AuthUI.getInstance()
+            .createSignInIntentBuilder()
+            .setAvailableProviders(providers)
+            .build()
+        signInLauncher.launch(signInIntent)
+        // [END auth_fui_create_intent]
+    }
+
+    // [START auth_fui_create_launcher]
+    // See: https://developer.android.com/training/basics/intents/result
+    private val signInLauncher = registerForActivityResult(
+        FirebaseAuthUIActivityResultContract()
+    ) { res ->
+        this.onSignInResult(res)
+    }
+    // [END auth_fui_create_launcher]
+
+    // [START auth_fui_result]
+    private fun onSignInResult(result: FirebaseAuthUIAuthenticationResult) {
+        val response = result.idpResponse
+        if (result.resultCode == RESULT_OK) {
+            // Successfully signed in
+            val user = FirebaseAuth.getInstance().currentUser
+            if (user!= null){
+                val useruid = user.uid.toString()
+                MyViewModel.loadAllData()
+                val username = user.displayName
+                Log.d(TAG, "Gebruiker " + username + " met userid " + useruid + " is ingelogd")
+                Snackbar.make(getWindow().getDecorView(), username + ' ' + getString(R.string.snackbar_userloggedin), Snackbar.LENGTH_LONG).show()
+                //val nu = LocalDateTime.now()
+                Log.d(TAG, "data gelezen")
+            }
+            else
+            {
+                Log.d(TAG, "Er is geen Gebruiker ingelogd")
+            }
+        } else {
+            // Sign in failed. If response is null the user canceled the
+            // sign-in flow using the back button. Otherwise check
+            // response.getError().getErrorCode() and handle the error.
+            // ...
+        }
+    }
+    // [END auth_fui_result]
+
+    private fun signOut() {
+        // [START auth_fui_signout]
+        AuthUI.getInstance()
+            .signOut(this)
+            .addOnCompleteListener {
+                MyViewModel.cleardata()
+            }
+        // [END auth_fui_signout]
+    }
+
+
+
+    // firebase functies
+    /*fun createSignInIntent() {
+
+        startActivity(Intent(this@MainActivity,GoogleSignInActivity::class.java))
+        // [START auth_fui_create_intent]
+        // Choose authentication providers
+        /*val providers = Arrays.asList(
             AuthUI.IdpConfig.EmailBuilder().build(),
             AuthUI.IdpConfig.GoogleBuilder().build()
         )
@@ -140,8 +245,10 @@ class MainActivity : AppCompatActivity() {
                 .setAvailableProviders(providers)
                 .build(),
             RC_SIGN_IN
-        )
+        )*/
         // [END auth_fui_create_intent]
+
+
     }
 
     // [START auth_fui_result]
@@ -195,5 +302,7 @@ class MainActivity : AppCompatActivity() {
     companion object {
         private const val RC_SIGN_IN = 45263
     }
+    */
+
 
 }

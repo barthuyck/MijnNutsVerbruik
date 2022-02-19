@@ -3,11 +3,13 @@ package be.huyck.mijnnutsverbruik.adapter
 import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
+
 import android.view.ViewGroup
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
-import be.huyck.mijnnutsverbruik.R
+
+import be.huyck.mijnnutsverbruik.databinding.FragmentMonthAdapterBinding
+
 import be.huyck.mijnnutsverbruik.model.MaandGegevens
 import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.XAxis
@@ -16,7 +18,7 @@ import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.ValueFormatter
-import kotlinx.android.synthetic.main.fragment_month_adapter.view.*
+//import kotlinx.android.synthetic.main.fragment_month_adapter.view.*
 import java.time.LocalDateTime
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
@@ -26,15 +28,19 @@ class MaandGegevensAdapter : RecyclerView.Adapter<MaandGegevensViewHolder>() {
     var lijst: List<MaandGegevens> = ArrayList()
     val TAG = "be.huyck.mijnnutsverbruik.MaandGegevensAdapter"
 
+    private lateinit var binding: FragmentMonthAdapterBinding
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MaandGegevensViewHolder {
         Log.d(TAG, "Start onCreateViewHolder")
-        return MaandGegevensViewHolder(
+        binding = FragmentMonthAdapterBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return MaandGegevensViewHolder(binding)
+        /*return MaandGegevensViewHolder(
             LayoutInflater.from(parent.context).inflate(
                 R.layout.fragment_month_adapter,
                 parent,
                 false
             )
-        )
+        )*/
     }
 
     fun geefMaandGegevensDoor(glijst: List<MaandGegevens>) {
@@ -48,25 +54,23 @@ class MaandGegevensAdapter : RecyclerView.Adapter<MaandGegevensViewHolder>() {
 
     override fun onBindViewHolder(holder: MaandGegevensViewHolder, position: Int) {
         holder.bind(lijst.get(position))
-        //Log.d(TAG,"Position $position")
-        //Log.d(TAG, "$lijst")
     }
 }
 
-class MaandGegevensViewHolder constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class MaandGegevensViewHolder constructor(private val binding: FragmentMonthAdapterBinding) : RecyclerView.ViewHolder(binding.root){
 
     fun bind(maandgegeven: MaandGegevens) {
 
-        //itemView.barChartWeekDatum.text = " hh "
+        //binding.barChartWeekDatum.text = " hh "
         val formatterdag = DateTimeFormatter.ofPattern("E dd/MM/yyyy")
         val grafiekdatumeerst = maandgegeven.datadagen?.last()?.datum?.format(formatterdag)
         val grafiekdatumlaatst = maandgegeven.datadagen?.first()?.datum?.format(formatterdag)
         val grafiekdatum = grafiekdatumeerst + " - " + grafiekdatumlaatst
-        itemView.barChartMonthDatum.text = grafiekdatum
+        binding.barChartMonthDatum.text = grafiekdatum
         val verbruikwaterinkub = maandgegeven.maanddata.sum()/1000
-        itemView.barChartMonthWater.text = "Maandverbruik water: " + verbruikwaterinkub.toString() + " m³."
+        binding.barChartMonthWater.text = "Maandverbruik water: " + verbruikwaterinkub.toString() + " m³."
         val verbruikgasinkub = maandgegeven.maanddatagas.sum()
-        itemView.barChartMonthGas.text = "Maandverbruik gas: " + String.format("%.3f", verbruikgasinkub) + " m³." // verbruikgasinkub.toString()
+        binding.barChartMonthGas.text = "Maandverbruik gas: " + String.format("%.3f", verbruikgasinkub) + " m³." // verbruikgasinkub.toString()
 
         val jaar :Int = maandgegeven.datadagen?.first()?.datum?.year ?: 2020
         val maand : Int = maandgegeven.datadagen?.first()?.datum?.monthValue ?: 2
@@ -124,25 +128,25 @@ class MaandGegevensViewHolder constructor(itemView: View) : RecyclerView.ViewHol
 
         data.barWidth = barWidth // set custom bar width
 
-        itemView.barChartMonth.setData(data)
-        itemView.barChartMonth.groupBars(0.5f, groupSpace, barSpace) // perform the "explicit" grouping
-        //itemView.barChartWeek.setFitBars(true) // make the x-axis fit exactly all bars
+        binding.barChartMonth.setData(data)
+        binding.barChartMonth.groupBars(0.5f, groupSpace, barSpace) // perform the "explicit" grouping
+        //binding.barChartWeek.setFitBars(true) // make the x-axis fit exactly all bars
 
-        val xAxis = itemView.barChartMonth.getXAxis()
+        val xAxis = binding.barChartMonth.getXAxis()
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM)
         xAxis.setTextSize(10f)
         xAxis.setDrawAxisLine(true)
         xAxis.setDrawGridLines(true)
         //xAxis.valueFormatter = MyValueFormatterWeek()
 
-        val yAxis = itemView.barChartMonth.axisLeft
+        val yAxis = binding.barChartMonth.axisLeft
         yAxis.axisMinimum = 0.0F
-        val yAxisr = itemView.barChartMonth.axisRight
+        val yAxisr = binding.barChartMonth.axisRight
         yAxisr.axisMinimum = 0.0F
         yAxisr.setDrawGridLines(false)
 
-        itemView.barChartMonth.getDescription().setEnabled(false)
-        itemView.barChartMonth.invalidate() // refresh
+        binding.barChartMonth.getDescription().setEnabled(false)
+        binding.barChartMonth.invalidate() // refresh
 
     }
 

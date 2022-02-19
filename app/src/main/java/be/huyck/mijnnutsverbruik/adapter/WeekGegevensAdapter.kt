@@ -2,11 +2,13 @@ package be.huyck.mijnnutsverbruik.adapter
 
 import android.graphics.Color
 import android.view.LayoutInflater
-import android.view.View
+
 import android.view.ViewGroup
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
-import be.huyck.mijnnutsverbruik.R
+
+import be.huyck.mijnnutsverbruik.databinding.FragmentWeekAdapterBinding
+
 import be.huyck.mijnnutsverbruik.model.WeekGegevens
 import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.XAxis
@@ -15,7 +17,7 @@ import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.ValueFormatter
-import kotlinx.android.synthetic.main.fragment_week_adapter.view.*
+//import kotlinx.android.synthetic.main.fragment_week_adapter.view.*
 import java.time.format.DateTimeFormatter
 
 
@@ -23,15 +25,19 @@ class WeekGegevensAdapter : RecyclerView.Adapter<WeekGegevensViewHolder>() {
     var lijst: List<WeekGegevens> = ArrayList()
     val TAG = "be.huyck.mijnnutsverbruik.WeekGegevensAdapter"
 
+    private lateinit var binding: FragmentWeekAdapterBinding
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WeekGegevensViewHolder {
         //Log.d(TAG, "Start onCreateViewHolder")
-        return WeekGegevensViewHolder(
+        binding = FragmentWeekAdapterBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return WeekGegevensViewHolder(binding)
+        /*return WeekGegevensViewHolder(
             LayoutInflater.from(parent.context).inflate(
                 R.layout.fragment_week_adapter,
                 parent,
                 false
             )
-        )
+        )*/
     }
 
     fun geefWeekGegevensDoor(glijst: List<WeekGegevens>) {
@@ -50,7 +56,7 @@ class WeekGegevensAdapter : RecyclerView.Adapter<WeekGegevensViewHolder>() {
     }
 }
 
-class WeekGegevensViewHolder constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class WeekGegevensViewHolder constructor(private val binding: FragmentWeekAdapterBinding) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(weekgegeven: WeekGegevens) {
 
@@ -58,11 +64,11 @@ class WeekGegevensViewHolder constructor(itemView: View) : RecyclerView.ViewHold
         val grafiekdatumeerst = weekgegeven.datadagen?.last()?.datum?.format(formatterdag)
         val grafiekdatumlaatst = weekgegeven.datadagen?.first()?.datum?.format(formatterdag)
         val grafiekdatum = grafiekdatumeerst + " - " + grafiekdatumlaatst
-        itemView.barChartWeekDatum.text = grafiekdatum
+        binding.barChartWeekDatum.text = grafiekdatum
         val verbruikwaterinkub = weekgegeven.weekdata.sum() / 1000
         val verbruikgasinkub = weekgegeven.weekdatagas.sum()
-        itemView.barChartWeekWater.text = "Weekverbruik water: " + verbruikwaterinkub.toString() + " m³."
-        itemView.barChartWeekGas.text = "Weekverbruik gas: " + String.format("%.3f", verbruikgasinkub) + " m³."
+        binding.barChartWeekWater.text = "Weekverbruik water: " + verbruikwaterinkub.toString() + " m³."
+        binding.barChartWeekGas.text = "Weekverbruik gas: " + String.format("%.3f", verbruikgasinkub) + " m³."
 
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(itemView.context)
         val GeefWaterWeerInGrafiek = sharedPreferences.getBoolean("switch_preference_water", true)
@@ -110,27 +116,27 @@ class WeekGegevensViewHolder constructor(itemView: View) : RecyclerView.ViewHold
         // (0.02 + 0.45) * 2 + 0.06 = 1.00 -> interval
 
         data.barWidth = barWidth // set custom bar width
-        itemView.barChartWeek.setData(data)
-        itemView.barChartWeek.groupBars(-0.5f, groupSpace, barSpace) // perform the "explicit" grouping
+        binding.barChartWeek.setData(data)
+        binding.barChartWeek.groupBars(-0.5f, groupSpace, barSpace) // perform the "explicit" grouping
         //itemView.barChartWeek.setFitBars(true) // make the x-axis fit exactly all bars
 
-        val xAxis = itemView.barChartWeek.getXAxis()
+        val xAxis = binding.barChartWeek.getXAxis()
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM)
         xAxis.setTextSize(10f)
         xAxis.setDrawAxisLine(true)
         xAxis.setDrawGridLines(true)
         xAxis.valueFormatter = MyValueFormatterWeek()
 
-        val yAxis = itemView.barChartWeek.axisLeft
+        val yAxis = binding.barChartWeek.axisLeft
         yAxis.axisMinimum = 0.0F
 
-        val yAxisr = itemView.barChartWeek.axisRight
+        val yAxisr = binding.barChartWeek.axisRight
         yAxisr.axisMinimum = 0.0F
         yAxisr.setDrawGridLines(false)
         //yAxisr.isEnabled = false
 
-        itemView.barChartWeek.getDescription().setEnabled(false)
-        itemView.barChartWeek.invalidate() // refresh
+        binding.barChartWeek.getDescription().setEnabled(false)
+        binding.barChartWeek.invalidate() // refresh
     }
 
     // the labels that should be drawn on the XAxis

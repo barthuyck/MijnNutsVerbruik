@@ -16,7 +16,6 @@ import java.time.format.DateTimeFormatter
 class VerbruiksViewModel : ViewModel() {
     val TAG = "be.huyck.mijnnutsverbruik.viewmodel"
 
-
     private val _text = MutableLiveData<String>().apply {
         value = "This is test Fragment"
     }

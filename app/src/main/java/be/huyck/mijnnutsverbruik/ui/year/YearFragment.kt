@@ -11,9 +11,11 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import be.huyck.mijnnutsverbruik.R
 import be.huyck.mijnnutsverbruik.adapter.JaarGegevensAdapter
+import be.huyck.mijnnutsverbruik.databinding.FragmentMonthBinding
+import be.huyck.mijnnutsverbruik.databinding.FragmentYearBinding
 import be.huyck.mijnnutsverbruik.model.JaarGegevens
 import be.huyck.mijnnutsverbruik.viewmodel.VerbruiksViewModel
-import kotlinx.android.synthetic.main.fragment_year.*
+//import kotlinx.android.synthetic.main.fragment_year.*
 
 class YearFragment : Fragment(){
 
@@ -23,12 +25,21 @@ class YearFragment : Fragment(){
 
     private lateinit var gegevensadapter: JaarGegevensAdapter
 
+    private var _binding: FragmentYearBinding? = null
+    // This property is only valid between onCreateView and
+    // onDestroyView.
+    private val binding get() = _binding!!
+
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_year, container, false)
+        _binding = FragmentYearBinding.inflate(inflater, container, false)
+        val view = binding.root
+        return view
+        //return inflater.inflate(R.layout.fragment_year, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -37,7 +48,7 @@ class YearFragment : Fragment(){
         verbruiksViewModel = ViewModelProvider(this).get(VerbruiksViewModel::class.java)
 
         gegevensadapter = JaarGegevensAdapter()
-        viewpageryear.adapter = gegevensadapter
+        binding.viewpageryear.adapter = gegevensadapter
 
         //viewModel = ViewModelProviders.of(this).get(DataViewModel::class.java)
         this.verbruiksViewModel = activity?.run {
